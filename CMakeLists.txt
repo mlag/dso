@@ -5,9 +5,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 
-set(BUILD_TYPE Release)
-#set(BUILD_TYPE RelWithDebInfo)
-
 set(EXECUTABLE_OUTPUT_PATH bin)
 set(LIBRARY_OUTPUT_PATH lib)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -55,14 +52,12 @@ set(dso_SOURCE_FILES
   ${PROJECT_SOURCE_DIR}/src/util/globalCalib.cpp
 )
 
+set(INCLUDE_DIRS  ${PROJECT_SOURCE_DIR}/src
+		${PROJECT_SOURCE_DIR}/thirdparty/Sophus
+		${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
+		${EIGEN3_INCLUDE_DIR})
 
-
-include_directories(
-  ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
-  ${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
-  ${EIGEN3_INCLUDE_DIR}
-) 
+include_directories(${INCLUDE_DIRS})
 
 
 # decide if we have pangolin
@@ -110,7 +105,7 @@ endif()
 
 # compile main library.
 include_directories( ${CSPARSE_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}) 
-add_library(dso ${dso_SOURCE_FILES} ${dso_opencv_SOURCE_FILES} ${dso_pangolin_SOURCE_FILES})
+add_library(dso SHARED ${dso_SOURCE_FILES} ${dso_opencv_SOURCE_FILES} ${dso_pangolin_SOURCE_FILES})
 
 #set_property( TARGET dso APPEND_STRING PROPERTY COMPILE_FLAGS -Wall )
 
@@ -130,3 +125,5 @@ else()
 	message("--- not building dso_dataset, since either don't have openCV or Pangolin.")
 endif()
 
+
+set_property(TARGET dso PROPERTY INCLUDE_DIRS ${INCLUDE_DIRS})
