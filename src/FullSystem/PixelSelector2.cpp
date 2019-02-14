@@ -101,6 +101,11 @@ void PixelSelector::makeHists(const FrameHessian* const fh)
 				if(it>w-2 || jt>h-2 || it<1 || jt<1) continue;
 				int g = sqrtf(map0[i+j*w]);
 				if(g>48) g=48;
+				if(g<0) {
+					continue;
+					printf("WARNING: %s:%d: g < 0, g = %d\n", __FILE__, __LINE__,g);
+
+				}
 				hist0[g+1]++;
 				hist0[0]++;
 			}
